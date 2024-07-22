@@ -37,6 +37,23 @@ class UserService {
     }
   }
 
+  isAuthenticated(token) {
+    try {
+      const response = this.verifyToken(token);
+      if (!response) {
+        throw { error: "Invalid token" };
+      }
+      const user = this.userRepository.getById(response.id);
+      if (!user) {
+        throw { error: "No user with the corresponding token exists" };
+      }
+      return user.id;
+    } catch (error) {
+      console.log("Something went wrong in service layer");
+      throw error;
+    }
+  }
+
   async destroy(userId) {
     try {
       await this.userRepository.destroy(userId);
